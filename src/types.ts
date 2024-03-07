@@ -36,7 +36,19 @@ type ImbalancedPosition = {
   }[],
 }
 
+type JournalEntry = {
+  date: Date,
+  entrys: {
+    account: string,
+    debit?: number,
+    credit?: number,
+    price: number,
+    amount: number,
+  }[],
+}
+
 export {
   Config,
   ImbalancedPosition,
+  JournalEntry,
 }

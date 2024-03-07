@@ -1,7 +1,7 @@
 import  rebalencerConfig from '../rebalancerConfig.json' assert { type: "json" };
 
 import { SecretNetworkClient } from 'secretjs';
-import { Config, ImbalancedPosition } from './types';
+import { Config, ImbalancedPosition, JournalEntry } from './types';
 
 const config = rebalencerConfig as Config
 
@@ -18,6 +18,7 @@ const imbalancedPosition: ImbalancedPosition = {
   underTarget: [] 
 };
 const actions: string[] = [];
+const journalEntrys: JournalEntry[] = [];
 let positionTotalValue = 0;
 let percentageTally = 0;
 async function main() {
@@ -93,6 +94,23 @@ async function main() {
           actions.push(
             `Sell ${sellAmount} ${currentOverTarget.position.assetName} for ${buyAmount} ${currentUnderTarget.position.assetName}`
           );
+          journalEntrys.push({
+            date: new Date(),
+            entrys: [
+              {
+                account: currentOverTarget.position.assetName,
+                credit: sellAmount * currentOverTarget.price,
+                price: currentOverTarget.price,
+                amount: sellAmount,
+              },
+              {
+                account: currentUnderTarget.position.assetName,
+                debit: buyAmount * currentUnderTarget.price,
+                price: currentUnderTarget.price,
+                amount: buyAmount,
+              }
+            ]
+          });
           imbalancedPosition.underTarget[j].dollarsUnder = 0;
           positionOverTargetValue = 0;
         } else if(positionOverTargetValue > positionUnderTargetValue) {
@@ -105,6 +123,23 @@ async function main() {
           actions.push(
             `Sell ${sellAmount} ${currentOverTarget.position.assetName} for ${buyAmount} ${currentUnderTarget.position.assetName}`
           );
+          journalEntrys.push({
+            date: new Date(),
+            entrys: [
+              {
+                account: currentOverTarget.position.assetName,
+                credit: sellAmount * currentOverTarget.price,
+                price: currentOverTarget.price,
+                amount: sellAmount,
+              },
+              {
+                account: currentUnderTarget.position.assetName,
+                debit: buyAmount * currentUnderTarget.price,
+                price: currentUnderTarget.price,
+                amount: buyAmount,
+              }
+            ]
+          });
           imbalancedPosition.underTarget[j].dollarsUnder = 0;
           positionOverTargetValue -= positionUnderTargetValue;
         } else if(positionOverTargetValue < positionUnderTargetValue) {
@@ -117,6 +152,23 @@ async function main() {
           actions.push(
             `Sell ${sellAmount} ${currentOverTarget.position.assetName} for ${buyAmount} ${currentUnderTarget.position.assetName}`
           );
+          journalEntrys.push({
+            date: new Date(),
+            entrys: [
+              {
+                account: currentOverTarget.position.assetName,
+                credit: sellAmount * currentOverTarget.price,
+                price: currentOverTarget.price,
+                amount: sellAmount,
+              },
+              {
+                account: currentUnderTarget.position.assetName,
+                debit: buyAmount * currentUnderTarget.price,
+                price: currentUnderTarget.price,
+                amount: buyAmount,
+              }
+            ]
+          });
           imbalancedPosition.underTarget[j].dollarsUnder -= positionOverTargetValue;
           positionOverTargetValue = 0;
         }
