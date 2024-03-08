@@ -15,6 +15,8 @@ type Config = {
   geckoApiKey: string,
   userAddress: string,
   tollerancePercent: number,
+  inventoryCsvLocation: string,
+  journalCsvLocation: string,
   positions: Position[],
 }
 
@@ -47,8 +49,18 @@ type JournalEntry = {
   }[],
 }
 
+type Inventory = {
+  [assetName: string]: {
+    [price: string]: {
+      amount: number,
+      price: number,
+    }
+  }
+}
+
 export {
   Config,
   ImbalancedPosition,
   JournalEntry,
+  Inventory,
 }
